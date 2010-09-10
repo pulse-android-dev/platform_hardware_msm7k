@@ -15,7 +15,7 @@
  */
 
 
-// #define LOG_NDEBUG 0
+#define LOG_NDEBUG 0
 #define LOG_TAG "lights"
 
 #include <cutils/log.h>
@@ -79,7 +79,8 @@ char const*const KEYBOARD_FILE
         = "/sys/class/leds/keyboard-backlight/brightness";
 
 char const*const BUTTON_FILE
-        = "/sys/class/leds/button-backlight/brightness";
+        = "/sys/class/leds/keyboard-backlight/brightness";
+/*        = "/sys/class/leds/button-backlight/brightness"; */
 
 /**
  * device methods
