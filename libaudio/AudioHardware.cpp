@@ -954,8 +954,6 @@ size_t AudioHardware::getInputBufferSize(uint32_t sampleRate, int format, int ch
 {
     if ( (format != AudioSystem::PCM_16_BIT) &&
          (format != AudioSystem::AMR_NB)     &&
-         (format != AudioSystem::EVRC)       &&
-         (format != AudioSystem::QCELP)      &&
          (format != AudioSystem::AAC)){
         LOGW("getInputBufferSize bad format: 0x%x", format);
         return 0;
@@ -967,10 +965,6 @@ size_t AudioHardware::getInputBufferSize(uint32_t sampleRate, int format, int ch
 
     if(format == AudioSystem::AMR_NB)
        return 320*channelCount;
-    else if (format == AudioSystem::EVRC)
-       return 230*channelCount;
-    else if (format == AudioSystem::QCELP)
-       return 350*channelCount;
     else if (format == AudioSystem::AAC)
        return 2048;
     else
@@ -1541,8 +1535,6 @@ status_t AudioHardware::AudioStreamInMSM72xx::set(
     if ((pFormat == 0) ||
         ((*pFormat != AUDIO_HW_IN_FORMAT) &&
          (*pFormat != AudioSystem::AMR_NB) &&
-         (*pFormat != AudioSystem::EVRC) &&
-         (*pFormat != AudioSystem::QCELP) &&
          (*pFormat != AudioSystem::AAC)))
     {
         *pFormat = AUDIO_HW_IN_FORMAT;
@@ -1630,9 +1622,7 @@ status_t AudioHardware::AudioStreamInMSM72xx::set(
     mSampleRate = config.sample_rate;
     mBufferSize = config.buffer_size;
     }
-    else if( (*pFormat == AudioSystem::AMR_NB) ||
-             (*pFormat == AudioSystem::EVRC) ||
-             (*pFormat == AudioSystem::QCELP))
+    else if(*pFormat == AudioSystem::AMR_NB) 
            {
 
       // open vocie memo input device
@@ -1691,30 +1681,6 @@ status_t AudioHardware::AudioStreamInMSM72xx::set(
           gcfg.frame_format = RPC_VOC_PB_AMR; // RPC_VOC_PB_AMR
           mFormat = AudioSystem::AMR_NB;
           mBufferSize = 320;
-          break;
-        }
-
-        case AudioSystem::EVRC:
-        {
-          LOGI("Recording Format: EVRC");
-          gcfg.capability = RPC_VOC_CAP_IS127;
-          gcfg.max_rate = RPC_VOC_1_RATE; // Max rate (Fixed frame)
-          gcfg.min_rate = RPC_VOC_1_RATE; // Min rate (Fixed frame length)
-          gcfg.frame_format = RPC_VOC_PB_NATIVE_QCP;
-          mFormat = AudioSystem::EVRC;
-          mBufferSize = 230;
-          break;
-        }
-
-        case AudioSystem::QCELP:
-        {
-          LOGI("Recording Format: QCELP");
-          gcfg.capability = RPC_VOC_CAP_IS733; // RPC_VOC_CAP_AMR (64)
-          gcfg.max_rate = RPC_VOC_1_RATE; // Max rate (Fixed frame)
-          gcfg.min_rate = RPC_VOC_1_RATE; // Min rate (Fixed frame length)
-          gcfg.frame_format = RPC_VOC_PB_NATIVE_QCP;
-          mFormat = AudioSystem::QCELP;
-          mBufferSize = 350;
           break;
         }
 
